@@ -41,7 +41,7 @@ export default function CustomerTable() {
           <tbody>
             {customers.map((customer, index) => (
               <tr
-                key={index}
+                key={customer.email}
                 className="border-b border-neutral-100 hover:bg-neutral-50 transition"
               >
                 <td className="py-5">{customer.name}</td>

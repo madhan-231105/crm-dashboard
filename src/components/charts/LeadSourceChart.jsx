@@ -3,23 +3,37 @@
 import Card from "../ui/Card";
 
 import {
+  ResponsiveContainer,
   PieChart,
   Pie,
-  ResponsiveContainer,
   Tooltip,
   Cell,
 } from "recharts";
 
 import { leadSourceData } from "@/data/crmData";
 
-const COLORS = ["#111", "#777", "#aaa", "#ddd"];
+const COLORS = [
+  "#111111",
+  "#444444",
+  "#777777",
+  "#aaaaaa",
+  "#d4d4d4",
+];
 
 export default function LeadSourceChart() {
   return (
-    <Card>
-      <h3 className="text-lg font-semibold mb-6">Lead Sources</h3>
+    <Card className="w-full min-w-0">
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold">
+          Lead Sources
+        </h3>
 
-      <div className="h-80">
+        <p className="text-sm text-neutral-500 mt-1">
+          Customer acquisition channels
+        </p>
+      </div>
+
+      <div className="w-full h-[320px] min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -28,9 +42,18 @@ export default function LeadSourceChart() {
               outerRadius={100}
               dataKey="value"
             >
-              {leadSourceData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index]} />
-              ))}
+              {leadSourceData.map(
+                (entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      COLORS[
+                        index % COLORS.length
+                      ]
+                    }
+                  />
+                )
+              )}
             </Pie>
 
             <Tooltip />

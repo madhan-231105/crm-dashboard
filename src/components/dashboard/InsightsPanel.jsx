@@ -2,8 +2,11 @@ import Card from "../ui/Card";
 
 const insights = [
   "Lead conversion increased 12% this month.",
+
   "Enterprise customers generate 68% more revenue.",
+
   "Organic traffic is the top acquisition source.",
+
   "Deal closing time reduced by 4 days.",
 ];
 
@@ -21,9 +24,9 @@ export default function InsightsPanel() {
       </div>
 
       <div className="space-y-4">
-        {insights.map((item, index) => (
+        {insights.map((item) => (
           <div
-            key={index}
+            key={item}
             className="border border-neutral-200 rounded-xl p-4 bg-neutral-50"
           >
             <p className="text-sm leading-relaxed text-neutral-700">

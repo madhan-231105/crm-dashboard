@@ -13,7 +13,7 @@ import Card from "../ui/Card";
 const initialData = {
   "New Lead": [
     {
-      id: "1",
+      id: "new-1",
       name: "Sarah Johnson",
       company: "Linear",
       amount: "$12,000",
@@ -22,18 +22,39 @@ const initialData = {
 
   Contacted: [
     {
-      id: "2",
+      id: "contacted-1",
       name: "Alex Smith",
       company: "Stripe",
       amount: "$8,500",
     },
   ],
 
-  Proposal: [],
+  Proposal: [
+    {
+      id: "proposal-1",
+      name: "Emma Wilson",
+      company: "Framer",
+      amount: "$9,400",
+    },
+  ],
 
-  Negotiation: [],
+  Negotiation: [
+    {
+      id: "negotiation-1",
+      name: "Daniel Brown",
+      company: "Notion",
+      amount: "$15,300",
+    },
+  ],
 
-  Closed: [],
+  Closed: [
+    {
+      id: "closed-1",
+      name: "Sophia Lee",
+      company: "Vercel",
+      amount: "$20,000",
+    },
+  ],
 };
 
 export default function PipelineBoard() {
