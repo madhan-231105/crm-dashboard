@@ -1,13 +1,11 @@
 "use client";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import {
   DragDropContext,
   Droppable,
   Draggable,
 } from "@hello-pangea/dnd";
-
 import Card from "../ui/Card";
 
 const initialData = {
@@ -59,6 +57,11 @@ const initialData = {
 
 export default function PipelineBoard() {
   const [columns, setColumns] = useState(initialData);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -92,16 +95,41 @@ export default function PipelineBoard() {
     });
   };
 
+  // SSR Hydration mismatch prevention: Render a skeletal layout until mounted
+  if (!mounted) {
+    return (
+      <Card className="border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.015)]">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-black">
+            Sales Pipeline
+          </h3>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 opacity-50">
+          {Object.keys(columns).map((columnId) => (
+            <div
+              key={columnId}
+              className="bg-zinc-50 border border-zinc-200/60 rounded-2xl p-3 min-h-[320px]"
+            >
+              <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-4">
+                {columnId}
+              </h4>
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card>
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xl font-semibold">
+    <Card className="border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.015)]">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-bold text-black">
           Sales Pipeline
         </h3>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
           {Object.entries(columns).map(
             ([columnId, tasks]) => (
               <Droppable
@@ -112,13 +140,19 @@ export default function PipelineBoard() {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4 min-h-[320px]"
+                    className="bg-zinc-50/50 border border-zinc-200/60 rounded-2xl p-3 min-h-[340px] flex flex-col"
                   >
-                    <h4 className="font-medium mb-4">
-                      {columnId}
-                    </h4>
+                    <div className="flex justify-between items-center mb-4 px-1">
+                      <h4 className="text-[10px] font-bold text-zinc-700 uppercase tracking-wider">
+                        {columnId}
+                      </h4>
 
-                    <div className="space-y-4">
+                      <span className="text-[9px] font-bold text-black bg-zinc-100 px-2 py-0.5 rounded-full border border-zinc-200">
+                        {tasks.length}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3 flex-1">
                       {tasks.map((task, index) => (
                         <Draggable
                           key={task.id}
@@ -130,22 +164,22 @@ export default function PipelineBoard() {
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className="bg-white border border-neutral-200 rounded-xl p-4 hover:shadow-sm transition cursor-grab active:cursor-grabbing"
+                              className="bg-white border border-zinc-200 rounded-xl p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.01)] hover:border-black hover:shadow-xs transition cursor-grab active:cursor-grabbing duration-200"
                             >
-                              <p className="font-medium">
+                              <p className="text-xs font-bold text-black leading-snug">
                                 {task.name}
                               </p>
 
-                              <p className="text-sm text-neutral-500 mt-1">
+                              <p className="text-[10px] text-zinc-400 font-semibold mt-1">
                                 {task.company}
                               </p>
 
-                              <div className="mt-4 flex items-center justify-between">
-                                <span className="text-sm font-medium">
+                              <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between">
+                                <span className="text-xs font-black text-[#DA291C]">
                                   {task.amount}
                                 </span>
 
-                                <span className="text-xs px-2 py-1 rounded-full bg-neutral-100 border border-neutral-200">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-red-50 text-[#DA291C] border border-red-100/50">
                                   Active
                                 </span>
                               </div>

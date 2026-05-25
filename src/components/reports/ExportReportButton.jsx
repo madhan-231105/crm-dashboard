@@ -18,19 +18,22 @@ export default function ExportReportButton() {
     <button
       onClick={handleExport}
       className="
-      h-11
+      h-10
       px-5
       rounded-xl
       border
-      border-neutral-200
+      border-white
       bg-white
-      hover:bg-neutral-100
+      text-[#DA291C]
+      hover:bg-white/95
       transition
       flex
       items-center
       gap-2
-      text-sm
-      font-medium
+      text-xs
+      font-extrabold
+      uppercase
+      tracking-wider
       shadow-sm
     "
     >
