@@ -17,11 +17,26 @@ export default function ExportReportButton() {
   return (
     <button
       onClick={handleExport}
-      className="h-11 px-5 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-100 transition flex items-center gap-2 text-sm font-medium"
+      className="
+      h-11
+      px-5
+      rounded-xl
+      border
+      border-neutral-200
+      bg-white
+      hover:bg-neutral-100
+      transition
+      flex
+      items-center
+      gap-2
+      text-sm
+      font-medium
+      shadow-sm
+    "
     >
       <Download size={16} />
 
-      Export PDF
+      Export Report
     </button>
   );
 }

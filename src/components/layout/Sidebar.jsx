@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+
 import { usePathname } from "next/navigation";
 
 import {
@@ -12,6 +13,7 @@ import {
   MessageSquare,
   Calendar,
   Settings,
+  X,
 } from "lucide-react";
 
 const items = [
@@ -57,58 +59,96 @@ const items = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  mobileMenuOpen,
+  setMobileMenuOpen,
+}) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 h-screen sticky top-0 border-r border-neutral-200 bg-white">
-      <div className="px-8 pt-8 pb-6 border-b border-neutral-200">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          CRM Studio
-        </h2>
+    <>
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/20 z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
 
-        <p className="text-sm text-neutral-500 mt-1">
-          Enterprise Workspace
-        </p>
-      </div>
+      <aside
+        className={`
+        fixed lg:sticky top-0 left-0 z-50
+        h-screen w-72 bg-white border-r border-neutral-200
+        transform transition-transform duration-300
+        flex flex-col
+        ${
+          mobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full"
+        }
+        lg:translate-x-0
+      `}
+      >
+        <div className="px-6 py-6 border-b border-neutral-200 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              CRM Studio
+            </h2>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {items.map((item) => {
-          const Icon = item.icon;
+            <p className="text-sm text-neutral-500 mt-1">
+              Enterprise Workspace
+            </p>
+          </div>
 
-          const active = pathname === item.href;
+          <button
+            className="lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <X size={22} />
+          </button>
+        </div>
 
-          return (
-            <Link
-              href={item.href}
-              key={item.label}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
-                active
-                  ? "bg-neutral-100 text-black border border-neutral-200"
-                  : "text-neutral-600 hover:bg-neutral-100"
-              }`}
-            >
-              <Icon size={18} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {items.map((item) => {
+            const Icon = item.icon;
 
-      <div className="p-4 border-t border-neutral-200">
-        <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-neutral-200" />
+            const active = pathname === item.href;
 
-            <div>
-              <p className="text-sm font-medium">Madhan</p>
-              <p className="text-xs text-neutral-500">
-                CRM Administrator
-              </p>
+            return (
+              <Link
+                href={item.href}
+                key={item.label}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
+                  active
+                    ? "bg-neutral-100 text-black border border-neutral-200"
+                    : "text-neutral-600 hover:bg-neutral-100"
+                }`}
+              >
+                <Icon size={18} />
+
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-neutral-200">
+          <div className="bg-neutral-50 rounded-2xl p-4 border border-neutral-200">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-neutral-200" />
+
+              <div>
+                <p className="text-sm font-medium">
+                  Madhan
+                </p>
+
+                <p className="text-xs text-neutral-500">
+                  CRM Administrator
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

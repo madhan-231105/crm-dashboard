@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+
 import autoTable from "jspdf-autotable";
 
 export default function generatePdfReport(
@@ -6,48 +7,178 @@ export default function generatePdfReport(
   stats
 ) {
   try {
-    const doc = new jsPDF();
+    const doc = new jsPDF("p", "mm", "a4");
 
-    // Title
-    doc.setFontSize(24);
+    const pageWidth =
+      doc.internal.pageSize.getWidth();
+
+    const pageHeight =
+      doc.internal.pageSize.getHeight();
+
+    // =================================================
+    // WATERMARK
+    // =================================================
+
+    doc.setFontSize(60);
+
+    doc.setTextColor(245);
+
+    doc.text(
+      "CRM STUDIO",
+      pageWidth / 2,
+      pageHeight / 2,
+      {
+        align: "center",
+        angle: 45,
+      }
+    );
+
+    // =================================================
+    // HEADER
+    // =================================================
+
+    doc.setFillColor(248, 248, 248);
+
+    doc.rect(0, 0, pageWidth, 38, "F");
+
+    doc.setFont("helvetica", "bold");
+
+    doc.setFontSize(26);
+
+    doc.setTextColor(20);
 
     doc.text("CRM Dashboard Report", 20, 20);
 
-    // Subtitle
+    doc.setFont("helvetica", "normal");
+
     doc.setFontSize(11);
 
-    doc.setTextColor(100);
+    doc.setTextColor(110);
 
     doc.text(
-      "Enterprise CRM Analytics Overview",
+      "Enterprise Analytics & Performance Summary",
       20,
-      30
+      28
     );
 
-    // KPI Section
+    // =================================================
+    // GENERATED DATE
+    // =================================================
+
+    const date = new Date().toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+
+    doc.setFontSize(10);
+
+    doc.text(`Generated: ${date}`, 20, 45);
+
+    // =================================================
+    // KPI SECTION TITLE
+    // =================================================
+
+    doc.setFont("helvetica", "bold");
+
     doc.setFontSize(18);
 
     doc.setTextColor(20);
 
-    doc.text("KPI Overview", 20, 50);
+    doc.text("KPI Overview", 20, 62);
+
+    // =================================================
+    // KPI CARDS
+    // =================================================
+
+    let startX = 20;
+
+    let startY = 72;
+
+    const cardWidth = 40;
+
+    const cardHeight = 28;
 
     stats.forEach((stat, index) => {
-      doc.setFontSize(12);
+      const x =
+        startX + (index % 2) * (cardWidth + 15);
 
-      doc.text(
-        `${stat.title}: ${stat.value} (${stat.growth})`,
-        20,
-        65 + index * 10
+      const y =
+        startY +
+        Math.floor(index / 2) * (cardHeight + 10);
+
+      // Card Background
+      doc.setFillColor(252, 252, 252);
+
+      doc.setDrawColor(230);
+
+      doc.roundedRect(
+        x,
+        y,
+        cardWidth + 25,
+        cardHeight,
+        4,
+        4,
+        "FD"
       );
+
+      // Title
+      doc.setFontSize(10);
+
+      doc.setTextColor(120);
+
+      doc.setFont("helvetica", "normal");
+
+      doc.text(stat.title, x + 6, y + 8);
+
+      // Value
+      doc.setFontSize(18);
+
+      doc.setTextColor(20);
+
+      doc.setFont("helvetica", "bold");
+
+      doc.text(stat.value, x + 6, y + 18);
+
+      // Growth
+      doc.setFontSize(9);
+
+      doc.setTextColor(90);
+
+      doc.setFont("helvetica", "normal");
+
+      doc.text(stat.growth, x + 6, y + 24);
     });
 
-    // Table
+    // =================================================
+    // CUSTOMER TABLE TITLE
+    // =================================================
+
+    doc.setFontSize(18);
+
+    doc.setTextColor(20);
+
+    doc.setFont("helvetica", "bold");
+
+    doc.text(
+      "Customer Performance",
+      20,
+      150
+    );
+
+    // =================================================
+    // TABLE
+    // =================================================
+
     autoTable(doc, {
-      startY: 115,
+      startY: 158,
 
       head: [
         [
-          "Name",
+          "Customer",
           "Company",
           "Email",
           "Deal Value",
@@ -63,19 +194,75 @@ export default function generatePdfReport(
         customer.status,
       ]),
 
+      theme: "grid",
+
       styles: {
+        font: "helvetica",
         fontSize: 10,
-        cellPadding: 4,
+        cellPadding: 5,
+        lineColor: [235, 235, 235],
+        lineWidth: 0.4,
+        textColor: [30, 30, 30],
       },
 
       headStyles: {
-        fillColor: [240, 240, 240],
+        fillColor: [245, 245, 245],
         textColor: [20, 20, 20],
+        fontStyle: "bold",
+      },
+
+      bodyStyles: {
+        fillColor: [255, 255, 255],
+      },
+
+      alternateRowStyles: {
+        fillColor: [250, 250, 250],
+      },
+
+      margin: {
+        left: 20,
+        right: 20,
       },
     });
 
-    doc.save("crm-dashboard-report.pdf");
+    // =================================================
+    // FOOTER
+    // =================================================
+
+    doc.setDrawColor(230);
+
+    doc.line(
+      20,
+      pageHeight - 18,
+      pageWidth - 20,
+      pageHeight - 18
+    );
+
+    doc.setFontSize(9);
+
+    doc.setTextColor(120);
+
+    doc.text(
+      "CRM Studio Enterprise Report",
+      20,
+      pageHeight - 10
+    );
+
+    doc.text(
+      "Generated by CRM Dashboard",
+      pageWidth - 70,
+      pageHeight - 10
+    );
+
+    // =================================================
+    // SAVE
+    // =================================================
+
+    doc.save("crm-enterprise-report.pdf");
   } catch (error) {
-    console.error("PDF Export Error:", error);
+    console.error(
+      "Professional PDF Export Error:",
+      error
+    );
   }
 }
